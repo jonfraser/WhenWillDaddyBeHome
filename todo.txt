@@ -1,0 +1,7 @@
+App
+	creates unique tracking token
+	send location and token to server
+
+Web
+	display map of SEQ bound to token
+	signalr receive and plot token location
