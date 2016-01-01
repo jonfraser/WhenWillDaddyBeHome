@@ -1,7 +1,38 @@
-﻿@model Guid
+﻿@model Guid?
 @{
     ViewBag.Title = "Daddy";
 }
 
 <h2>When will Daddy be home?</h2>
 
+@if (!Model.HasValue)
+{
+    var newToken = Guid.NewGuid();
+    @Html.ActionLink("Get a new tracking token", "Here", new { id = newToken })
+}
+else {
+
+}
+
+@section Scripts{
+    <script src="~/signalr/hubs"></script>
+
+    <script type="text/javascript">
+        //from https://github.com/SignalR/Samples/blob/master/Samples_2.1.0/WebApplication/Features/Hub/DemoHub.js
+
+            var locationHub = $.connection.locationHub;
+
+            locationHub.client.locationMessageReceived = function (token, lat, long) {
+                if (token === '@Model.GetValueOrDefault().ToString()') {
+                    //message was for me, update the map
+                    console.log(lat);
+                    console.log(long);
+                }
+            };
+            
+            $.connection.hub.start();
+
+
+    </script>
+
+}

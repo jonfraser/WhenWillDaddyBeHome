@@ -1,7 +1,7 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-namespace WhenWillDaddyBeHome.App_Start
+namespace WhenWillDaddyBeHome
 {
     public class Startup
     {

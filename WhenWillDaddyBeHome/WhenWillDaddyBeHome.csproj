@@ -149,7 +149,7 @@
     <Folder Include="Areas\api\Controllers\" />
     <Folder Include="Areas\api\Models\" />
     <Folder Include="Areas\api\Views\Shared\" />
-    <Folder Include="Models\" />
+    <Folder Include="Views\A\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -186,11 +186,13 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AController.cs" />
     <Compile Include="Controllers\WhereIsController.cs" />
-    <Compile Include="Controllers\IAmController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\LocationHub.cs" />
+    <Compile Include="Models\Location.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +248,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\WhereIs\Daddy.cshtml" />
+    <Content Include="Views\WhereIs\Here.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
