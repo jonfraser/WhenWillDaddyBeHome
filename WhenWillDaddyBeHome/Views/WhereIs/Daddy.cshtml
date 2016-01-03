@@ -12,15 +12,21 @@
 }
 else {
     <div id="map" style="height:300px;"></div>
+    <p id="current"></p>
 }
 
 @section Scripts{
     <script src="~/signalr/hubs"></script>
 
+<script 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARyjD48pzEQIPETramNz7ZxtvgEEpuw5Y&signed_in=true">
+</script>
+
     <script type="text/javascript">
         //from https://github.com/SignalR/Samples/blob/master/Samples_2.1.0/WebApplication/Features/Hub/DemoHub.js
 
         var map = undefined;
+        var geocoder = new google.maps.Geocoder;
 
         function initMap(lat, long) {
             var myLatLng = { lat: lat, lng: long };
@@ -32,11 +38,24 @@ else {
                 });
             }
 
+            var address = 'somewhere';
+            geocoder.geocode({ 'location': myLatLng }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        address = results[1].formatted_address;
+                    }
+                }
+            });
+
+            var currentLocation = 'Daddy was at ' + address + ' at ' + (new Date()).toString();
+
             var marker = new google.maps.Marker({
                 position: myLatLng,
                 map: map,
-                title: 'Daddy was here at ' + (new Date()).toString()
+                title: currentLocation
             });
+
+            $("#current").html(currentLocation);
         }
 
         var locationHub = $.connection.locationHub;
@@ -54,7 +73,5 @@ else {
 
     </script>
 
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARyjD48pzEQIPETramNz7ZxtvgEEpuw5Y&signed_in=true">
-    </script>
+   
 }

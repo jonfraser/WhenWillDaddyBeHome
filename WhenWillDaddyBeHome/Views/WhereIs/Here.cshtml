@@ -5,28 +5,58 @@
 
 <h2>I am here!</h2>
 
+<div id="map" style="height:300px;"></div>
+
 @*<p>Share this location</p>*@
 
-<script type="text/javascript">
+@section Scripts{
 
-    function getLocation(timeout) {
-        window.setTimeout(function () {
-            var position = navigator.geolocation.getCurrentPosition(updateLocation);
-        }, timeout || 5000);
-    }
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARyjD48pzEQIPETramNz7ZxtvgEEpuw5Y&signed_in=true">
+    </script>
 
-    function updateLocation(position) {
-        var lat = position.coords.latitude;
-        var long = position.coords.longitude;
-        $.post('@Url.Action("UpdateMyLocation", "A")', {
-            Id: '@Model',
-            Lat: lat,
-            Long: long
-        }, function () {
-            getLocation();
-        });
-    }
 
-    getLocation(0);
+    <script type="text/javascript">
 
-</script>
+        var map = undefined;
+
+        function getLocation(timeout) {
+            window.setTimeout(function () {
+                var position = navigator.geolocation.getCurrentPosition(updateLocation);
+            }, timeout || 5000);
+        }
+
+        function updateLocation(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            initMap(lat, long);
+            $.post('@Url.Action("UpdateMyLocation", "A")', {
+                Id: '@Model',
+                Lat: lat,
+                Long: long
+            }, function () {
+                getLocation();
+            });
+        }
+
+        function initMap(lat, long) {
+            var myLatLng = { lat: lat, lng: long };
+
+            if (map === undefined) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 14,
+                    center: myLatLng
+                });
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Here!'
+            });
+
+        }
+
+        getLocation(0);
+
+    </script>
+}

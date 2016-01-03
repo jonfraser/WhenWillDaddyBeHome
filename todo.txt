@@ -5,3 +5,10 @@ App
 Web
 	display map of SEQ bound to token
 	signalr receive and plot token location
+	 
+
+From Mummy
+	set expected time to leave and updates through the day
+	show map plus reverse geo lookup of location
+	show map on the I am here page too
+	
