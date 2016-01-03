@@ -11,7 +11,7 @@
     @Html.ActionLink("Get a new tracking token", "Here", new { id = newToken })
 }
 else {
-
+    <div id="map" style="height:300px;"></div>
 }
 
 @section Scripts{
@@ -20,19 +20,41 @@ else {
     <script type="text/javascript">
         //from https://github.com/SignalR/Samples/blob/master/Samples_2.1.0/WebApplication/Features/Hub/DemoHub.js
 
-            var locationHub = $.connection.locationHub;
+        var map = undefined;
 
-            locationHub.client.locationMessageReceived = function (token, lat, long) {
-                if (token === '@Model.GetValueOrDefault().ToString()') {
-                    //message was for me, update the map
-                    console.log(lat);
-                    console.log(long);
-                }
-            };
-            
-            $.connection.hub.start();
+        function initMap(lat, long) {
+            var myLatLng = { lat: lat, lng: long };
 
+            if (map === undefined) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 14,
+                    center: myLatLng
+                });
+            }
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Daddy was here at ' + (new Date()).toString()
+            });
+        }
+
+        var locationHub = $.connection.locationHub;
+
+        locationHub.client.locationMessageReceived = function (token, lat, long) {
+            if (token === '@Model.GetValueOrDefault().ToString()') {
+                //message was for me, update the map
+                initMap(lat, long);
+                console.log(lat);
+                console.log(long);
+            }
+        };
+
+        $.connection.hub.start();
 
     </script>
 
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARyjD48pzEQIPETramNz7ZxtvgEEpuw5Y&signed_in=true">
+    </script>
 }
