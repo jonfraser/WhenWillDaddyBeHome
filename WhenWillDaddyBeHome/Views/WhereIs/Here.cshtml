@@ -1,0 +1,32 @@
+﻿@model Guid
+@{
+    ViewBag.Title = "Here";
+}
+
+<h2>I am here!</h2>
+
+@*<p>Share this location</p>*@
+
+<script type="text/javascript">
+
+    function getLocation(timeout) {
+        window.setTimeout(function () {
+            var position = navigator.geolocation.getCurrentPosition(updateLocation);
+        }, timeout || 5000);
+    }
+
+    function updateLocation(position) {
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        $.post('@Url.Action("UpdateMyLocation", "A")', {
+            Id: '@Model',
+            Lat: lat,
+            Long: long
+        }, function () {
+            getLocation();
+        });
+    }
+
+    getLocation(0);
+
+</script>
