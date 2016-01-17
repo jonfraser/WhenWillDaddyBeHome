@@ -22,7 +22,7 @@
         function getLocation(timeout) {
             window.setTimeout(function () {
                 var position = navigator.geolocation.getCurrentPosition(updateLocation);
-            }, timeout || 5000);
+            }, timeout);
         }
 
         function updateLocation(position) {
@@ -34,7 +34,7 @@
                 Lat: lat,
                 Long: long
             }, function () {
-                getLocation();
+                getLocation(60000);
             });
         }
 
@@ -56,7 +56,7 @@
 
         }
 
-        getLocation(0);
+        getLocation(1);
 
     </script>
 }

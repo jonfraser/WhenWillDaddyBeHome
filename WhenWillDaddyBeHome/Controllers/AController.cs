@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using WhenWillDaddyBeHome.Hubs;
 using WhenWillDaddyBeHome.Models;
+using System.Web.Caching;
 
 namespace WhenWillDaddyBeHome.Controllers
 {
@@ -21,6 +22,7 @@ namespace WhenWillDaddyBeHome.Controllers
         [HttpPost]
         public void UpdateMyLocation(Location value)
         {
+			Request.RequestContext.HttpContext.Cache.Add(value.Id.ToString(), value, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<LocationHub>();
             hubContext.Clients.All.locationMessageReceived(value.Id, value.Lat, value.Long);
         }

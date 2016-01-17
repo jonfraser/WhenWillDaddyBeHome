@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WhenWillDaddyBeHome.Models;
 
 namespace WhenWillDaddyBeHome.Controllers
 {
@@ -10,7 +11,8 @@ namespace WhenWillDaddyBeHome.Controllers
     {
         public ActionResult Daddy(Guid? id)
         {
-            return View(id);
+			var cachedToken = Request.RequestContext.HttpContext.Cache[id.GetValueOrDefault().ToString()] as Location;
+			return View(cachedToken);
         }
 
         public ActionResult Here(Guid id)

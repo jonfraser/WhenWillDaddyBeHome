@@ -1,16 +1,18 @@
-﻿@model Guid?
+﻿@model WhenWillDaddyBeHome.Models.Location
 @{
     ViewBag.Title = "Daddy";
+    var trackingToken = "";
 }
 
 <h2>When will Daddy be home?</h2>
 
-@if (!Model.HasValue)
+@if (Model == null)
 {
     var newToken = Guid.NewGuid();
     @Html.ActionLink("Get a new tracking token", "Here", new { id = newToken })
 }
 else {
+    trackingToken = Model.Id.ToString();
     <div id="map" style="height:300px;"></div>
     <p id="current"></p>
 }
@@ -61,7 +63,7 @@ else {
         var locationHub = $.connection.locationHub;
 
         locationHub.client.locationMessageReceived = function (token, lat, long) {
-            if (token === '@Model.GetValueOrDefault().ToString()') {
+            if (token === '@trackingToken') {
                 //message was for me, update the map
                 initMap(lat, long);
                 console.log(lat);
@@ -70,6 +72,11 @@ else {
         };
 
         $.connection.hub.start();
+
+        @if(Model != null)
+        {
+            @:initMap(@Model.Lat, @Model.Long);
+        }
 
     </script>
 
