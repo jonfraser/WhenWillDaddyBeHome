@@ -22,7 +22,12 @@ namespace WhenWillDaddyBeHome.Controllers
         [HttpPost]
         public void UpdateMyLocation(Location value)
         {
+            if(HttpContext.Cache[value.Id.ToString()] != null)
+            {
+                HttpContext.Cache.Remove(value.Id.ToString());
+            }
 			Request.RequestContext.HttpContext.Cache.Add(value.Id.ToString(), value, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
+
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<LocationHub>();
             hubContext.Clients.All.locationMessageReceived(value.Id, value.Lat, value.Long);
         }
