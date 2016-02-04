@@ -22,7 +22,8 @@ namespace WhenWillDaddyBeHome.Controllers
         [HttpPost]
         public void UpdateMyLocation(Location value)
         {
-            if(HttpContext.Cache[value.Id.ToString()] != null)
+            value.TimestampUTC = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            if (HttpContext.Cache[value.Id.ToString()] != null)
             {
                 HttpContext.Cache.Remove(value.Id.ToString());
             }
@@ -32,7 +33,7 @@ namespace WhenWillDaddyBeHome.Controllers
             hubContext.Clients.All.locationMessageReceived(value.Id, 
                 value.Lat, 
                 value.Long, 
-                DateTime.UtcNow.Subtract(new DateTime(1970,1,1)).TotalMilliseconds);
+                value.TimestampUTC);
         }
     }
 }
