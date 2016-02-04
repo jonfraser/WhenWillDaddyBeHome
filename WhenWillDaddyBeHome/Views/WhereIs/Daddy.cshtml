@@ -30,7 +30,7 @@ else {
         var map = undefined;
         var geocoder = new google.maps.Geocoder;
 
-        function initMap(lat, long) {
+        function initMap(lat, long, timestampUTC) {
             var myLatLng = { lat: lat, lng: long };
 
             if (map === undefined) {
@@ -49,7 +49,7 @@ else {
                 }
             });
 
-            var currentLocation = 'Daddy was at ' + address + ' at ' + (new Date()).toString();
+            var currentLocation = 'Daddy was at ' + address + ' at ' + (new Date(timestampUTC)).toString() + 'UTC';
 
             var marker = new google.maps.Marker({
                 position: myLatLng,
@@ -62,10 +62,10 @@ else {
 
         var locationHub = $.connection.locationHub;
 
-        locationHub.client.locationMessageReceived = function (token, lat, long) {
+        locationHub.client.locationMessageReceived = function (token, lat, long, timestampUTC) {
             if (token === '@trackingToken') {
                 //message was for me, update the map
-                initMap(lat, long);
+                initMap(lat, long, timestampUTC);
                 console.log(lat);
                 console.log(long);
             }
@@ -75,7 +75,7 @@ else {
 
         @if(Model != null)
         {
-            @:initMap(@Model.Lat, @Model.Long);
+            @:initMap(@Model.Lat, @Model.Long, @Model.TimestampUTC);
         }
 
     </script>

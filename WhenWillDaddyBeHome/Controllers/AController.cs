@@ -29,7 +29,10 @@ namespace WhenWillDaddyBeHome.Controllers
 			Request.RequestContext.HttpContext.Cache.Add(value.Id.ToString(), value, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
 
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<LocationHub>();
-            hubContext.Clients.All.locationMessageReceived(value.Id, value.Lat, value.Long);
+            hubContext.Clients.All.locationMessageReceived(value.Id, 
+                value.Lat, 
+                value.Long, 
+                DateTime.UtcNow.Subtract(new DateTime(1970,1,1)).TotalMilliseconds);
         }
     }
 }

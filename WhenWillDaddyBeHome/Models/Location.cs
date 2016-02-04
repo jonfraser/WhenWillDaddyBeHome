@@ -10,5 +10,6 @@ namespace WhenWillDaddyBeHome.Models
         public Guid Id { get; set; }
         public double Lat { get; set; }
         public double Long { get; set; }
+        public double TimestampUTC { get; set; }
     }
 }
