@@ -16,6 +16,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Text;
 
 // The Hub Application template is documented at http://go.microsoft.com/fwlink/?LinkID=391641
 
@@ -36,7 +40,8 @@ namespace WinPhoneApp
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        } 
+
+        }
 
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
@@ -69,6 +74,7 @@ namespace WinPhoneApp
         private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
+
             var item = await SampleDataSource.GetItemAsync((string)e.NavigationParameter);
             this.DefaultViewModel["Item"] = item;
         }
@@ -112,5 +118,49 @@ namespace WinPhoneApp
         }
 
         #endregion
+
+        private bool SendLocation = false;
+        private Guid thisIdentifier;
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SendLocation = !SendLocation;
+
+            var displayRequest = new Windows.System.Display.DisplayRequest();
+            displayRequest.RequestActive();
+
+            thisIdentifier = Guid.NewGuid();
+
+            while (SendLocation)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://whenwilldaddybehome.azurewebsites.net/");
+                    var location = await new Windows.Devices.Geolocation.Geolocator().GetGeopositionAsync();
+                    var content = new
+                    {
+                        Id = thisIdentifier.ToString(),
+                        Lat = location.Coordinate.Point.Position.Latitude,
+                        Long = location.Coordinate.Point.Position.Longitude
+                    };
+                    await client.PostAsync("a/updatemylocation", new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json"));
+
+                    await Task.Delay(TimeSpan.FromSeconds(60));
+                }
+
+            }
+        }
+
+        private async void Share_Click(object sender, RoutedEventArgs e)
+        {
+            var chatMessage = new Windows.ApplicationModel.Chat.ChatMessage();
+            chatMessage.Body = "When will daddy be home? https://whenwilldaddybehome.azurewebsites.net/WhereIs/Daddy/" + thisIdentifier.ToString();
+
+            //var phone = recipient.Phones.FirstOrDefault & lt; Windows.ApplicationModel.Contacts.ContactPhone & gt; ();
+            //if (phone != null)
+            //{
+            //    chatMessage.Recipients.Add(phone.Number);
+            //}
+            await Windows.ApplicationModel.Chat.ChatMessageManager.ShowComposeSmsMessageAsync(chatMessage);
+        }
     }
 }
